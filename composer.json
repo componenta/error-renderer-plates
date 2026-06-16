@@ -1,0 +1,22 @@
+{
+    "name": "componenta/error-renderer-plates",
+    "description": "League Plates renderer integration for Componenta error handling",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "componenta/error-handler": "^1.0",
+        "league/plates": "^3.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Componenta\\Error\\Renderer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Componenta\\Error\\Renderer\\Plates\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
