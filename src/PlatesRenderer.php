@@ -83,7 +83,7 @@ readonly class PlatesRenderer implements HttpErrorRendererInterface
             }
         }
 
-        $code = $this->statusCode($exception);
+        $code = $this->statusCode($exception, $context);
 
         if (isset($this->templateMap[$code])) {
             return $this->templateMap[$code];
