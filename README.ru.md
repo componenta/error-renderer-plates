@@ -20,7 +20,9 @@ use League\Plates\Engine;
 
 $engine = new Engine(__DIR__ . '/templates');
 $renderer = new PlatesRenderer($engine);
-$html = $renderer->render($exception, $context);
+$result = $renderer->render($exception, $context);
+$html = (string) $result;
+$contentType = $result->contentType;
 ```
 
 `PlatesRenderer` требует `League\Plates\Engine`. Конструктор также принимает:
@@ -30,3 +32,5 @@ $html = $renderer->render($exception, $context);
 - `$templateMap`, где ключами могут быть имена классов исключений или HTTP-статусы.
 
 Встроенные шаблоны находятся в `templates/` и включают общую страницу ошибки, 404 и 500.
+
+Метод `render()` возвращает объект `RenderedError` из ядра с полями `content`, `contentType` и преобразованием в строку. Требуется Error Handler 2.

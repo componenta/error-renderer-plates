@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Componenta\Error\Renderer;
 
 use Componenta\Error\ErrorContextInterface;
-use Componenta\Error\Renderer\ErrorRendererInterface;
 use League\Plates\Engine;
 use Throwable;
 
 /**
  * Template-based error renderer using League Plates.
  */
-readonly class PlatesRenderer implements HttpErrorRendererInterface
+readonly class PlatesRenderer implements ErrorRendererInterface
 {
     /**
      * @param string $defaultTemplate Default template name
@@ -27,11 +26,14 @@ readonly class PlatesRenderer implements HttpErrorRendererInterface
     ) {
     }
 
-    public function render(Throwable $exception, ErrorContextInterface $context): string
+    public function render(Throwable $exception, ErrorContextInterface $context): RenderedError
     {
-        return $this->engine->render(
-            $this->resolveTemplate($exception, $context),
-            $this->buildPayload($exception, $context),
+        return new RenderedError(
+            $this->engine->render(
+                $this->resolveTemplate($exception, $context),
+                $this->buildPayload($exception, $context),
+            ),
+            'text/html; charset=utf-8',
         );
     }
 
@@ -107,10 +109,5 @@ readonly class PlatesRenderer implements HttpErrorRendererInterface
         }
         $code = $exception->getCode();
         return is_int($code) && $code >= 400 && $code < 600 ? $code : 500;
-    }
-
-    public function renderHttp(Throwable $exception, \Componenta\Error\Context\HttpErrorContextInterface $context): RenderedError
-    {
-        return new RenderedError($this->render($exception, $context), 'text/html; charset=utf-8');
     }
 }

@@ -16,7 +16,9 @@ use League\Plates\Engine;
 
 $engine = new Engine(__DIR__ . '/templates');
 $renderer = new PlatesRenderer($engine);
-$html = $renderer->render($exception, $context);
+$result = $renderer->render($exception, $context);
+$html = (string) $result;
+$contentType = $result->contentType;
 ```
 
 `PlatesRenderer` requires a `League\Plates\Engine`. The constructor also accepts:
@@ -30,3 +32,5 @@ Bundled templates are stored in `templates/` and include generic error, 404, and
 ## Boundary
 
 This package only provides a renderer. It does not provide the application template helper from `componenta/templater-app` and does not handle response emission.
+
+`render()` returns the core `RenderedError` value, with `content`, `contentType`, and explicit string conversion. Requires Error Handler 2.

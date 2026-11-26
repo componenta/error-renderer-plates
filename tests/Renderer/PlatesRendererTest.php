@@ -24,8 +24,10 @@ final class PlatesRendererTest extends TestCase
             $renderer = new PlatesRenderer(new Engine($dir));
 
             $output = $renderer->render(new RuntimeException('Plates renderer test', 500), CliContext::fromArgv());
+            self::assertSame('text/html; charset=utf-8', $output->contentType);
+            self::assertSame($output->content, (string) $output);
 
-            self::assertSame('message=Plates renderer test;code=500;debug=no', $output);
+            self::assertSame('message=Plates renderer test;code=500;debug=no', $output->content);
         } finally {
             $this->removeTemplateDirectory($dir);
         }
@@ -42,8 +44,10 @@ final class PlatesRendererTest extends TestCase
             $renderer = new PlatesRenderer(new Engine($dir));
 
             $output = $renderer->render(new RuntimeException('Not Found', 404), CliContext::fromArgv());
+            self::assertSame('text/html; charset=utf-8', $output->contentType);
+            self::assertSame($output->content, (string) $output);
 
-            self::assertSame('not-found=404', $output);
+            self::assertSame('not-found=404', $output->content);
         } finally {
             $this->removeTemplateDirectory($dir);
         }
