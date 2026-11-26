@@ -2,6 +2,7 @@
 /**
  * 404 Not Found error template
  * 
+ * @var \Componenta\Error\ErrorOccurrence $error
  * @var Throwable $exception
  * @var \Componenta\Error\ErrorContextInterface $context
  * @var bool $debug
@@ -16,9 +17,7 @@
 $this->layout('layout', ['title' => '404 - Not Found']);
 
 $path = '/404';
-if (isset($context) && method_exists($context, 'request')) {
-    $path = $context->request->getUri()->getPath();
-} elseif (isset($context) && property_exists($context, 'request')) {
+if ($context instanceof \Componenta\Error\Context\HttpErrorContextInterface) {
     $path = $context->request->getUri()->getPath();
 }
 ?>
@@ -42,6 +41,8 @@ d88   888  888    888 d88   888
 
 <p>The path you requested doesn't exist in <span class="white">Componenta</span> application.</p>
 <p>Check your <span class="white">routes</span> configuration or return to <span class="green">home</span>.</p>
+
+<p>Error ID: <span class="white"><?= $this->e($error->id) ?></span></p>
 
 <p>Type <span class="green">help</span> to get list of available commands.</p>
 

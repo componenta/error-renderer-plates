@@ -2,6 +2,7 @@
 /**
  * 500 Server Error template
  * 
+ * @var \Componenta\Error\ErrorOccurrence $error
  * @var Throwable $exception
  * @var \Componenta\Error\ErrorContextInterface $context
  * @var bool $debug
@@ -40,7 +41,9 @@ Y88b  d88PY88b  d88P Y88b  d88P
 <p>Oops! <span class="error-code">500</span> Internal Server Error</p>
 
 <p>Something went wrong in <span class="white">Componenta</span> application.</p>
-<p>The error has been <span class="white">logged</span> and we'll look into it.</p>
+<p>Contact support if the problem persists.</p>
+
+<p>Error ID: <span class="white"><?= $this->e($error->id) ?></span></p>
 
 <p>Type <span class="green">help</span> to get list of available commands.</p>
 

@@ -35,3 +35,5 @@ Bundled templates are stored in `templates/` and include generic error, 404, and
 This package only provides a renderer. It does not provide the application template helper from `componenta/templater-app` and does not handle response emission.
 
 `render()` returns the core `RenderedError` value, with `content`, `contentType`, and explicit string conversion. Requires Error Handler 2.
+
+Templates receive the original `ErrorOccurrence` as `$error`; use `$error->id` for correlation. Bundled templates omit exception messages in non-debug mode and do not claim reporting succeeded. Custom templates are trusted PHP and still receive the original exception and context; the debug flag is not a sandbox.

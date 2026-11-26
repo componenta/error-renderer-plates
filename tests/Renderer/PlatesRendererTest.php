@@ -18,7 +18,7 @@ final class PlatesRendererTest extends TestCase
     public function testRenderUsesInjectedEngine(): void
     {
         $dir = $this->createTemplateDirectory([
-            'error.php' => 'message=<?= $this->e($message) ?>;code=<?= $code ?>;debug=<?= $debug ? "yes" : "no" ?>',
+            'error.php' => 'message=<?= $this->e($message) ?>;code=<?= $code ?>;debug=<?= $debug ? "yes" : "no" ?>;id=<?= $this->e($error->id) ?>',
         ]);
 
         try {
@@ -28,7 +28,7 @@ final class PlatesRendererTest extends TestCase
             self::assertSame('text/html; charset=utf-8', $output->contentType);
             self::assertSame($output->content, (string) $output);
 
-            self::assertSame('message=Plates renderer test;code=500;debug=no', $output->content);
+            self::assertSame('message=Plates renderer test;code=500;debug=no;id=ERR-test', $output->content);
         } finally {
             $this->removeTemplateDirectory($dir);
         }

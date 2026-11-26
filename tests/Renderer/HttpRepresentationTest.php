@@ -22,4 +22,18 @@ final class HttpRepresentationTest extends TestCase
         self::assertNotEmpty($result->content);
         self::assertSame($result->content, (string) $result);
     }
+
+    public function testBundledProductionTemplatesDoNotExposeExceptionDetailsOrClaimReporting(): void
+    {
+        $renderer = new PlatesRenderer(new \League\Plates\Engine(dirname(__DIR__, 2) . '/templates'));
+        $context = new HttpContext(new ServerRequest('GET', '/'));
+        foreach ([404, 500, 503] as $status) {
+            $error = new ErrorOccurrence(new RuntimeException('private-diagnostic-message'), 'ERR-bundled');
+            $html = $renderer->render($error, $context->withAttribute(\Componenta\Error\Context\ErrorContextAttribute::HTTP_STATUS_CODE, $status))->content;
+            self::assertStringContainsString('ERR-bundled', $html);
+            self::assertStringNotContainsString('private-diagnostic-message', $html);
+            self::assertStringNotContainsString('fonts.googleapis.com', $html);
+            self::assertStringNotContainsString('The error has been', $html);
+        }
+    }
 }

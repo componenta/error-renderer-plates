@@ -2,6 +2,7 @@
 /**
  * Generic error template
  * 
+ * @var \Componenta\Error\ErrorOccurrence $error
  * @var Throwable $exception
  * @var \Componenta\Error\ErrorContextInterface $context
  * @var bool $debug
@@ -37,10 +38,12 @@ $errorText = $errorMessages[$code] ?? 'ERROR';
 
 <pre class="ascii-text"><?= $this->e($errorText) ?></pre>
 
-<p>Error <span class="error-code"><?= $code ?></span>: <?= $this->e($message ?? $errorText) ?></p>
+<p>Error <span class="error-code"><?= $code ?></span>: <?= $this->e($debug ? ($message ?? $errorText) : $errorText) ?></p>
 
 <p>Something went wrong in <span class="white">Componenta</span> application.</p>
-<p>The error has been <span class="white">logged</span> and we'll look into it.</p>
+<p>Contact support if the problem persists.</p>
+
+<p>Error ID: <span class="white"><?= $this->e($error->id) ?></span></p>
 
 <p>Type <span class="green">help</span> to get list of available commands.</p>
 
