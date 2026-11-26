@@ -16,7 +16,8 @@ use League\Plates\Engine;
 
 $engine = new Engine(__DIR__ . '/templates');
 $renderer = new PlatesRenderer($engine);
-$result = $renderer->render($exception, $context);
+$error = (new \Componenta\Error\ErrorOccurrenceFactory())->create($exception);
+$result = $renderer->render($error, $context);
 $html = (string) $result;
 $contentType = $result->contentType;
 ```

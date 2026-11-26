@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Componenta\Error\Renderer\Plates\Tests\Renderer;
 
+use Componenta\Error\ErrorOccurrence;
 use Componenta\Error\Context\CliContext;
 use Componenta\Error\Renderer\PlatesRenderer;
 use League\Plates\Engine;
@@ -23,7 +24,7 @@ final class PlatesRendererTest extends TestCase
         try {
             $renderer = new PlatesRenderer(new Engine($dir));
 
-            $output = $renderer->render(new RuntimeException('Plates renderer test', 500), CliContext::fromArgv());
+            $output = $renderer->render(new ErrorOccurrence(new RuntimeException('Plates renderer test', 500), 'ERR-test'), CliContext::fromArgv());
             self::assertSame('text/html; charset=utf-8', $output->contentType);
             self::assertSame($output->content, (string) $output);
 
@@ -43,7 +44,7 @@ final class PlatesRendererTest extends TestCase
         try {
             $renderer = new PlatesRenderer(new Engine($dir));
 
-            $output = $renderer->render(new RuntimeException('Not Found', 404), CliContext::fromArgv());
+            $output = $renderer->render(new ErrorOccurrence(new RuntimeException('Not Found', 404), 'ERR-test'), CliContext::fromArgv());
             self::assertSame('text/html; charset=utf-8', $output->contentType);
             self::assertSame($output->content, (string) $output);
 

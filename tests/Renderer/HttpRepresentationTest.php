@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Componenta\Error\Renderer\Plates\Tests\Renderer;
 
+use Componenta\Error\ErrorOccurrence;
 use Componenta\Error\Context\HttpContext;
 use Componenta\Error\Renderer\PlatesRenderer;
 use Nyholm\Psr7\ServerRequest;
@@ -16,7 +17,7 @@ final class HttpRepresentationTest extends TestCase
     {
         $renderer = new PlatesRenderer(new \League\Plates\Engine(dirname(__DIR__, 2) . '/templates'));
         $context = new HttpContext(new ServerRequest('GET', '/', ['Accept' => 'application/json']));
-        $result = $renderer->render(new RuntimeException('rendering test'), $context);
+        $result = $renderer->render(new ErrorOccurrence(new RuntimeException('rendering test'), 'ERR-test'), $context);
         self::assertSame('text/html; charset=utf-8', $result->contentType);
         self::assertNotEmpty($result->content);
         self::assertSame($result->content, (string) $result);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Componenta\Error\Renderer;
 
 use Componenta\Error\ErrorContextInterface;
+use Componenta\Error\ErrorOccurrence;
 use League\Plates\Engine;
 use Throwable;
 
@@ -26,8 +27,9 @@ readonly class PlatesRenderer implements ErrorRendererInterface
     ) {
     }
 
-    public function render(Throwable $exception, ErrorContextInterface $context): RenderedError
+    public function render(ErrorOccurrence $error, ErrorContextInterface $context): RenderedError
     {
+        $exception = $error->exception;
         return new RenderedError(
             $this->engine->render(
                 $this->resolveTemplate($exception, $context),
@@ -37,7 +39,7 @@ readonly class PlatesRenderer implements ErrorRendererInterface
         );
     }
 
-    public function supports(Throwable $exception, ErrorContextInterface $context): bool
+    public function supports(ErrorOccurrence $error, ErrorContextInterface $context): bool
     {
         return true;
     }
