@@ -12,7 +12,7 @@ use Throwable;
 /**
  * Template-based error renderer using League Plates.
  */
-readonly class PlatesRenderer implements ErrorRendererInterface
+readonly class PlatesRenderer implements HttpErrorRendererInterface
 {
     /**
      * @param string $defaultTemplate Default template name
@@ -30,7 +30,7 @@ readonly class PlatesRenderer implements ErrorRendererInterface
     public function render(Throwable $exception, ErrorContextInterface $context): string
     {
         return $this->engine->render(
-            $this->resolveTemplate($exception),
+            $this->resolveTemplate($exception, $context),
             $this->buildPayload($exception, $context),
         );
     }
@@ -60,7 +60,7 @@ readonly class PlatesRenderer implements ErrorRendererInterface
             'exception' => $exception,
             'context' => $context,
             'debug' => $this->debug,
-            'code' => $this->statusCode($exception),
+            'code' => $this->statusCode($exception, $context),
             'message' => $exception->getMessage(),
             'type' => $exception::class,
         ];
@@ -75,7 +75,7 @@ readonly class PlatesRenderer implements ErrorRendererInterface
         return $payload;
     }
 
-    private function resolveTemplate(Throwable $exception): string
+    private function resolveTemplate(Throwable $exception, ErrorContextInterface $context): string
     {
         foreach ($this->templateMap as $key => $template) {
             if (is_string($key) && $exception instanceof $key) {
@@ -96,10 +96,21 @@ readonly class PlatesRenderer implements ErrorRendererInterface
         return $this->defaultTemplate;
     }
 
-    private function statusCode(Throwable $exception): int
+    private function statusCode(Throwable $exception, ErrorContextInterface $context): int
     {
+        if ($context instanceof \Componenta\Error\Context\HttpErrorContextInterface) {
+            $status = $context->getAttribute(\Componenta\Error\Context\ErrorContextAttribute::HTTP_STATUS_CODE, null);
+            if (is_int($status) && $status >= 400 && $status < 600) {
+                return $status;
+            }
+            return (new \Componenta\Error\Http\HttpStatusResolver())->resolve($exception, $context);
+        }
         $code = $exception->getCode();
+        return is_int($code) && $code >= 400 && $code < 600 ? $code : 500;
+    }
 
-        return $code >= 400 && $code < 600 ? $code : 500;
+    public function renderHttp(Throwable $exception, \Componenta\Error\Context\HttpErrorContextInterface $context): RenderedError
+    {
+        return new RenderedError($this->render($exception, $context), 'text/html; charset=utf-8');
     }
 }
